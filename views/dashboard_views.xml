@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Futuristic OWL dashboard: the main "Dashboard" menu entry -->
+    <record id="action_grow_trading_owl_dashboard" model="ir.actions.client">
+        <field name="name">Trading Dashboard</field>
+        <field name="tag">grow_trading_dashboard</field>
+    </record>
+
+    <!-- KPI-style kanban cards: one tile per trader/month -->
+    <record id="view_grow_monthly_summary_kanban" model="ir.ui.view">
+        <field name="name">grow.monthly.summary.kanban</field>
+        <field name="model">grow.monthly.summary</field>
+        <field name="arch" type="xml">
+
+            <kanban class="o_kanban_dashboard" create="false">
+
+                <!-- Fields used by the card -->
+                <field name="display_name"/>
+                <field name="net_monthly_pl"/>
+                <field name="total_monthly_profit"/>
+                <field name="total_monthly_loss"/>
+                <field name="average_daily_pl"/>
+                <field name="trading_days"/>
+                <field name="opening_balance"/>
+                <field name="closing_balance"/>
+                <field name="best_winning_streak"/>
+                <field name="best_losing_streak"/>
+                <field name="currency_id"/>
+
+                <templates>
+                    <t t-name="card">
+
+                        <div class="oe_kanban_global_click">
+
+                            <!-- ================================================= -->
+                            <!-- HEADER -->
+                            <!-- ================================================= -->
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+
+                                <div class="min-w-0">
+                                    <div class="fw-bold fs-5 text-truncate">
+                                        <field name="display_name"/>
+                                    </div>
+
+                                    <div class="text-muted small mt-1">
+                                        Monthly Trading Summary
+                                    </div>
+                                </div>
+
+                                <!-- Net P/L -->
+                                <div t-attf-class="badge rounded-pill fs-6 px-3 py-2 ms-2
+                                    #{record.net_monthly_pl.raw_value &gt;= 0
+                                        ? 'text-bg-success'
+                                        : 'text-bg-danger'}">
+
+                                    <field name="net_monthly_pl" widget="monetary"/>
+                                </div>
+
+                            </div>
+
+
+                            <!-- ================================================= -->
+                            <!-- NET RESULT -->
+                            <!-- ================================================= -->
+                            <div class="border rounded p-3 mb-3">
+
+                                <div class="d-flex justify-content-between align-items-center">
+
+                                    <span class="text-muted">
+                                        Net Monthly P/L
+                                    </span>
+
+                                    <strong t-attf-class="
+                                        #{record.net_monthly_pl.raw_value &gt;= 0
+                                            ? 'text-success'
+                                            : 'text-danger'}">
+
+                                        <field name="net_monthly_pl"
+                                            widget="monetary"/>
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- ================================================= -->
+                            <!-- PROFIT / LOSS -->
+                            <!-- ================================================= -->
+                            <div class="row g-2 mb-3">
+
+                                <!-- Total Profit -->
+                                <div class="col-6">
+                                    <div class="border rounded p-2 h-100">
+
+                                        <div class="text-muted small">
+                                            Total Profit
+                                        </div>
+
+                                        <div class="fw-bold text-success mt-1">
+                                            <field name="total_monthly_profit"
+                                                widget="monetary"/>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <!-- Total Loss -->
+                                <div class="col-6">
+                                    <div class="border rounded p-2 h-100">
+
+                                        <div class="text-muted small">
+                                            Total Loss
+                                        </div>
+
+                                        <div class="fw-bold text-danger mt-1">
+                                            <field name="total_monthly_loss"
+                                                widget="monetary"/>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+                            <!-- ================================================= -->
+                            <!-- PERFORMANCE -->
+                            <!-- ================================================= -->
+                            <div class="border rounded mb-3">
+
+                                <!-- Average Daily P/L -->
+                                <div class="d-flex justify-content-between
+                                            align-items-center p-2 border-bottom">
+
+                                    <span class="text-muted">
+                                        Average Daily P/L
+                                    </span>
+
+                                    <strong>
+                                        <field name="average_daily_pl"
+                                            widget="monetary"/>
+                                    </strong>
+
+                                </div>
+
+
+                                <!-- Trading Days -->
+                                <div class="d-flex justify-content-between
+                                            align-items-center p-2 border-bottom">
+
+                                    <span class="text-muted">
+                                        Trading Days
+                                    </span>
+
+                                    <strong>
+                                        <field name="trading_days"/>
+                                    </strong>
+
+                                </div>
+
+
+                                <!-- Opening Balance -->
+                                <div class="d-flex justify-content-between
+                                            align-items-center p-2 border-bottom">
+
+                                    <span class="text-muted">
+                                        Opening Balance
+                                    </span>
+
+                                    <strong>
+                                        <field name="opening_balance"
+                                            widget="monetary"/>
+                                    </strong>
+
+                                </div>
+
+
+                                <!-- Closing Balance -->
+                                <div class="d-flex justify-content-between
+                                            align-items-center p-2">
+
+                                    <span class="text-muted">
+                                        Closing Balance
+                                    </span>
+
+                                    <strong>
+                                        <field name="closing_balance"
+                                            widget="monetary"/>
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- ================================================= -->
+                            <!-- STREAKS -->
+                            <!-- ================================================= -->
+                            <div class="row g-2">
+
+                                <!-- Winning Streak -->
+                                <div class="col-6">
+
+                                    <div class="border rounded p-2 text-center">
+
+                                        <div class="text-muted small">
+                                            Best Winning Streak
+                                        </div>
+
+                                        <div class="fw-bold text-success fs-5 mt-1">
+
+                                            <field name="best_winning_streak"/>
+
+                                            <span class="small fw-normal">
+                                                days
+                                            </span>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+                                <!-- Losing Streak -->
+                                <div class="col-6">
+
+                                    <div class="border rounded p-2 text-center">
+
+                                        <div class="text-muted small">
+                                            Worst Losing Streak
+                                        </div>
+
+                                        <div class="fw-bold text-danger fs-5 mt-1">
+
+                                            <field name="best_losing_streak"/>
+
+                                            <span class="small fw-normal">
+                                                days
+                                            </span>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </t>
+                </templates>
+
+            </kanban>
+
+        </field>
+    </record>
+
+    <record id="action_grow_trading_dashboard" model="ir.actions.act_window">
+        <field name="name">Monthly Reports</field>
+        <field name="res_model">grow.monthly.summary</field>
+        <field name="view_mode">kanban,list,graph,pivot</field>
+        <field name="search_view_id" ref="view_grow_monthly_summary_search"/>
+        <field name="context">{'search_default_filter_my': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Your reports will appear here once you log a trade
+            </p>
+            <p>
+                KPI cards summarize your monthly performance: net P/L, average daily P/L,
+                trading days and winning/losing streaks. Switch to the Graph or Pivot view
+                for a deeper visual breakdown, or use the new Dashboard menu for the full
+                interactive overview.
+            </p>
+        </field>
+    </record>
+
+    <!-- Explicit kanban view id binding so the dashboard action opens the KPI kanban first -->
+    <record id="action_grow_trading_dashboard_view_kanban" model="ir.actions.act_window.view">
+        <field name="sequence">1</field>
+        <field name="view_mode">kanban</field>
+        <field name="view_id" ref="view_grow_monthly_summary_kanban"/>
+        <field name="act_window_id" ref="action_grow_trading_dashboard"/>
+    </record>
+    <record id="action_grow_trading_dashboard_view_graph" model="ir.actions.act_window.view">
+        <field name="sequence">2</field>
+        <field name="view_mode">graph</field>
+        <field name="view_id" ref="view_grow_monthly_summary_graph"/>
+        <field name="act_window_id" ref="action_grow_trading_dashboard"/>
+    </record>
+    <record id="action_grow_trading_dashboard_view_pivot" model="ir.actions.act_window.view">
+        <field name="sequence">3</field>
+        <field name="view_mode">pivot</field>
+        <field name="view_id" ref="view_grow_monthly_summary_pivot"/>
+        <field name="act_window_id" ref="action_grow_trading_dashboard"/>
+    </record>
+
+</odoo>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ==========================================================
+         Module Category
+    =========================================================== -->
+
+    <record id="module_category_grow_trading" model="ir.module.category">
+        <field name="name">Trading Journal</field>
+        <field name="description">
+            Access rights for the Grow Platform Trading Journal.
+        </field>
+        <field name="sequence">20</field>
+    </record>
+
+    <!-- ==========================================================
+         Privilege
+    =========================================================== -->
+
+    <record id="privilege_grow_trading" model="res.groups.privilege">
+        <field name="name">Trading Journal</field>
+        <field name="category_id" ref="module_category_grow_trading"/>
+    </record>
+
+    <!-- ==========================================================
+         Groups
+    =========================================================== -->
+
+    <record id="group_trader" model="res.groups">
+        <field name="name">Trader</field>
+        <field name="privilege_id" ref="privilege_grow_trading"/>
+        <field name="comment">
+            Can record and view their own trades, daily and monthly summaries.
+        </field>
+    </record>
+
+    <record id="group_trading_supervisor" model="res.groups">
+        <field name="name">Trading Supervisor</field>
+        <field name="privilege_id" ref="privilege_grow_trading"/>
+        <field name="implied_ids" eval="[(4, ref('group_trader'))]"/>
+        <field name="comment">
+            Can view and manage all traders' journals and summaries.
+        </field>
+        <field name="user_ids" eval="[(4, ref('base.user_admin'))]"/>
+    </record>
+
+</odoo>

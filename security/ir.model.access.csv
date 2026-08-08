@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_grow_intraday_trade_trader,grow.intraday.trade.trader,model_grow_intraday_trade,group_trader,1,1,1,1
+access_grow_intraday_trade_supervisor,grow.intraday.trade.supervisor,model_grow_intraday_trade,group_trading_supervisor,1,1,1,1
+access_grow_daily_summary_trader,grow.daily.summary.trader,model_grow_daily_summary,group_trader,1,1,1,0
+access_grow_daily_summary_supervisor,grow.daily.summary.supervisor,model_grow_daily_summary,group_trading_supervisor,1,1,1,1
+access_grow_monthly_summary_trader,grow.monthly.summary.trader,model_grow_monthly_summary,group_trader,1,1,1,0
+access_grow_monthly_summary_supervisor,grow.monthly.summary.supervisor,model_grow_monthly_summary,group_trading_supervisor,1,1,1,1

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem id="menu_grow_trading_root" name="Trading Journal"
+              sequence="45" web_icon="grow_intraday_trading,static/description/icon.png"/>
+
+    <menuitem id="menu_grow_trading_dashboard" name="Dashboard"
+              parent="menu_grow_trading_root" sequence="10"
+              action="action_grow_trading_owl_dashboard"/>
+
+    <menuitem id="menu_grow_trading_trades" name="All Trades"
+              parent="menu_grow_trading_root" sequence="20"
+              action="action_grow_intraday_trade"/>
+
+    <menuitem id="menu_grow_trading_daily_summary" name="Daily Summaries"
+              parent="menu_grow_trading_root" sequence="30"
+              action="action_grow_daily_summary"/>
+
+    <menuitem id="menu_grow_trading_root_monthly" name="Monthly  Summaries"
+              parent="menu_grow_trading_root" sequence="40"
+              action="action_grow_monthly_summary"/>
+    <menuitem id="menu_grow_trading_monthly_summary" name="Monthly Overview"
+              parent="menu_grow_trading_root_monthly"
+              action="action_grow_monthly_summary"/>
+
+    <menuitem id="menu_grow_trading_reports" name="Monthly Reports"
+              parent="menu_grow_trading_root_monthly"
+              action="action_grow_trading_dashboard"/>
+
+</odoo>

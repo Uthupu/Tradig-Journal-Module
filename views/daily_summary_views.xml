@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_grow_daily_summary_list" model="ir.ui.view">
+        <field name="name">grow.daily.summary.list</field>
+        <field name="model">grow.daily.summary</field>
+        <field name="arch" type="xml">
+            <list string="Daily Summaries" decoration-success="net_daily_pl &gt; 0"
+                  decoration-danger="net_daily_pl &lt; 0" default_order="date desc">
+                <field name="date"/>
+                <field name="user_id"/>
+                <field name="opening_balance" widget="monetary"/>
+                <field name="total_daily_profit" widget="monetary" sum="Total Daily Profit" decoration-success="total_daily_profit &gt; 0"/>
+                <field name="total_daily_loss" widget="monetary" sum="Total Daily Loss" decoration-danger="total_daily_loss &gt; 0"/>
+                <field name="net_daily_pl" widget="monetary" sum="Total Net P/L" decoration-success="net_daily_pl &gt; 0" decoration-danger="net_daily_pl &lt; 0"/>
+                <field name="closing_balance" widget="monetary"/>
+                <field name="trade_count"/>
+                <field name="currency_id" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_grow_daily_summary_form" model="ir.ui.view">
+        <field name="name">grow.daily.summary.form</field>
+        <field name="model">grow.daily.summary</field>
+        <field name="arch" type="xml">
+            <form string="Daily Trading Summary">
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="display_name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="Period">
+                            <field name="date"/>
+                            <field name="user_id"/>
+                            <field name="currency_id" groups="base.group_multi_currency"/>
+                        </group>
+                        <group string="Balance">
+                            <label for="opening_balance"/>
+                            <div class="o_row">
+                                <field name="opening_balance" widget="monetary"/>
+                                <button name="action_pull_previous_closing_balance" type="object"
+                                        string="Pull Previous Closing Balance" class="btn-link"/>
+                            </div>
+                            <field name="closing_balance" widget="monetary"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Performance">
+                            <field name="total_daily_profit" widget="monetary"/>
+                            <field name="total_daily_loss" widget="monetary"/>
+                            <field name="net_daily_pl" widget="monetary"/>
+                        </group>
+                        <group string="Trade Stats">
+                            <field name="trade_count"/>
+                            <field name="winning_trades"/>
+                            <field name="losing_trades"/>
+                            <field name="monthly_summary_id" readonly="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Trades">
+                            <field name="trade_ids" context="{'default_trade_date': date, 'default_user_id': user_id}">
+                                <list decoration-success="profit_loss &gt; 0" decoration-danger="profit_loss &lt; 0"
+                                      editable="bottom">
+                                    <field name="stock_symbol"/>
+                                    <field name="trade_type"/>
+                                    <field name="buy_price"/>
+                                    <field name="sell_price"/>
+                                    <field name="quantity"/>
+                                    <field name="profit_loss" widget="monetary"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                    <field name="notes"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_grow_daily_summary_search" model="ir.ui.view">
+        <field name="name">grow.daily.summary.search</field>
+        <field name="model">grow.daily.summary</field>
+        <field name="arch" type="xml">
+            <search string="Search Daily Summaries">
+                <field name="date"/>
+                <field name="user_id"/>
+                <filter string="My Summaries" name="filter_my" domain="[('user_id', '=', uid)]"/>
+                <filter string="Profitable Days" name="filter_profit" domain="[('net_daily_pl', '&gt;', 0)]"/>
+                <filter string="Loss Days" name="filter_loss" domain="[('net_daily_pl', '&lt;', 0)]"/>
+                <group>
+                    <filter string="Trader" name="groupby_user" context="{'group_by': 'user_id'}"/>
+                    <filter string="Month" name="groupby_month" context="{'group_by': 'date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_grow_daily_summary_graph" model="ir.ui.view">
+        <field name="name">grow.daily.summary.graph</field>
+        <field name="model">grow.daily.summary</field>
+        <field name="arch" type="xml">
+            <graph string="Daily P/L" type="bar">
+                <field name="date" type="row"/>
+                <field name="net_daily_pl" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_grow_daily_summary" model="ir.actions.act_window">
+        <field name="name">Daily Summaries</field>
+        <field name="res_model">grow.daily.summary</field>
+        <field name="view_mode">list,form,graph</field>
+        <field name="search_view_id" ref="view_grow_daily_summary_search"/>
+        <field name="context">{'search_default_filter_my': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No daily summaries yet
+            </p>
+            <p>
+                A Daily Summary is created automatically the first time you log a trade
+                for a given date. Set the Opening Balance to start tracking your Closing
+                Balance and Net Daily P/L.
+            </p>
+        </field>
+    </record>
+
+</odoo>

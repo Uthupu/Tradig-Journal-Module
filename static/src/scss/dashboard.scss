@@ -1,0 +1,670 @@
+.gtd-dashboard {
+    --gtd-bg-1: #0b1020;
+    --gtd-bg-2: #121a30;
+    --gtd-accent: #38e0bd;
+    --gtd-accent-2: #7c6bff;
+    --gtd-pos: #38e0bd;
+    --gtd-neg: #ff5c7a;
+    --gtd-text: #f2f6fc;
+    --gtd-text-muted: #8b9ac2;
+    --gtd-border: rgba(255, 255, 255, 0.08);
+
+    background:
+        radial-gradient(1200px 500px at 10% -10%, rgba(124, 107, 255, 0.18), transparent 60%),
+        radial-gradient(1000px 500px at 110% 0%, rgba(56, 224, 189, 0.14), transparent 55%),
+        linear-gradient(180deg, var(--gtd-bg-1), var(--gtd-bg-2));
+    color: var(--gtd-text);
+    min-height: 100%;
+    padding: 28px 32px 48px;
+    font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+    * {
+        box-sizing: border-box;
+    }
+
+    .gtd-header {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 24px;
+
+        &-eyebrow {
+            text-transform: uppercase;
+            letter-spacing: 0.14em;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--gtd-accent);
+            margin-bottom: 4px;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--gtd-text);
+            letter-spacing: -0.01em;
+        }
+
+        &-actions {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+    }
+
+    .gtd-period-switch {
+        display: inline-flex;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid var(--gtd-border);
+        border-radius: 999px;
+        padding: 4px;
+    }
+
+    .gtd-period-btn {
+        background: transparent;
+        border: none;
+        color: var(--gtd-text-muted);
+        font-size: 12.5px;
+        font-weight: 600;
+        padding: 7px 14px;
+        border-radius: 999px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+
+        &:hover {
+            color: var(--gtd-text);
+        }
+
+        &.active {
+            background: linear-gradient(135deg, var(--gtd-accent), var(--gtd-accent-2));
+            color: #071018;
+            box-shadow: 0 0 18px rgba(56, 224, 189, 0.35);
+        }
+    }
+
+    .gtd-updated-at {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 11.5px;
+        color: var(--gtd-text-muted);
+        white-space: nowrap;
+
+        .fa {
+            font-size: 11px;
+        }
+    }
+
+    .gtd-refresh-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 34px;
+        height: 34px;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid var(--gtd-border);
+        border-radius: 999px;
+        color: var(--gtd-text-muted);
+        cursor: pointer;
+        transition: all 0.2s ease;
+
+        &:hover:not(:disabled) {
+            color: var(--gtd-text);
+            border-color: var(--gtd-accent);
+        }
+
+        &:disabled {
+            cursor: default;
+            opacity: 0.7;
+        }
+    }
+
+    .gtd-spin {
+        animation: gtd-spin 0.9s linear infinite;
+    }
+
+    @keyframes gtd-spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+
+    .gtd-cta {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: linear-gradient(135deg, var(--gtd-accent-2), #4d3fe0);
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        padding: 10px 18px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        box-shadow: 0 8px 22px rgba(124, 107, 255, 0.35);
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+        &:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 26px rgba(124, 107, 255, 0.45);
+        }
+    }
+
+    .gtd-loading {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 14px;
+        padding: 100px 0;
+        color: var(--gtd-text-muted);
+        font-size: 13px;
+    }
+
+    .gtd-spinner {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        border: 3px solid rgba(255, 255, 255, 0.12);
+        border-top-color: var(--gtd-accent);
+        animation: gtd-spin 0.8s linear infinite;
+    }
+
+    @keyframes gtd-spin {
+        to { transform: rotate(360deg); }
+    }
+
+    .gtd-card {
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+        border: 1px solid var(--gtd-border);
+        border-radius: 16px;
+        backdrop-filter: blur(10px);
+        padding: 20px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .gtd-kpi-grid {
+        display: grid;
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        gap: 16px;
+        margin-bottom: 20px;
+
+        @media (max-width: 1400px) {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+        @media (max-width: 800px) {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    .gtd-kpi {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+
+        &-hero {
+            grid-column: span 2;
+            background: linear-gradient(160deg, rgba(56, 224, 189, 0.14), rgba(124, 107, 255, 0.08));
+            border-color: rgba(56, 224, 189, 0.25);
+
+            @media (max-width: 800px) {
+                grid-column: span 2;
+            }
+        }
+    }
+
+    .gtd-kpi-icon {
+        width: 34px;
+        height: 34px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 15px;
+        margin-bottom: 4px;
+        background: rgba(255, 255, 255, 0.06);
+        color: var(--gtd-accent);
+    }
+
+    .gtd-kpi-label {
+        font-size: 11.5px;
+        color: var(--gtd-text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        font-weight: 600;
+    }
+
+    .gtd-kpi-value {
+        font-size: 26px;
+        font-weight: 700;
+        line-height: 1.1;
+        font-variant-numeric: tabular-nums;
+
+        .gtd-streak-label {
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 4px;
+            color: var(--gtd-text-muted);
+        }
+    }
+
+    .gtd-kpi-sub {
+        display: flex;
+        gap: 14px;
+        font-size: 12px;
+        font-weight: 600;
+        margin-top: 2px;
+
+        span { display: inline-flex; align-items: center; gap: 4px; }
+    }
+
+    .gtd-best-worst {
+        display: flex;
+        gap: 12px;
+        font-size: 18px;
+        font-weight: 700;
+    }
+
+    .gtd-pos { color: var(--gtd-pos); }
+    .gtd-neg { color: var(--gtd-neg); }
+    .gtd-flat { color: var(--gtd-text-muted); font-weight: 500; font-size: 15px; }
+
+    .gtd-progress {
+        height: 5px;
+        border-radius: 4px;
+        background: rgba(255, 255, 255, 0.08);
+        margin-top: 6px;
+        overflow: hidden;
+
+        &-bar {
+            height: 100%;
+            border-radius: 4px;
+            background: linear-gradient(90deg, var(--gtd-accent-2), var(--gtd-accent));
+        }
+    }
+
+    .gtd-charts-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 16px;
+        margin-bottom: 16px;
+
+        @media (max-width: 1100px) {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .gtd-card-header {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        margin-bottom: 14px;
+
+        h3 {
+            margin: 0;
+            font-size: 14.5px;
+            font-weight: 700;
+            color: var(--gtd-text);
+        }
+    }
+
+    .gtd-card-hint {
+        font-size: 11.5px;
+        color: var(--gtd-text-muted);
+    }
+
+    .gtd-link {
+        cursor: pointer;
+        color: var(--gtd-accent);
+        transition: opacity 0.15s ease;
+        &:hover { opacity: 0.75; }
+    }
+
+    .gtd-chart-wrap {
+        height: 260px;
+        position: relative;
+
+        &-short {
+            height: 220px;
+        }
+    }
+
+    .gtd-symbol-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .gtd-symbol-row {
+        display: grid;
+        grid-template-columns: 70px 1fr 70px;
+        align-items: center;
+        gap: 10px;
+        font-size: 12.5px;
+    }
+
+    .gtd-symbol-name {
+        font-weight: 700;
+        color: var(--gtd-text);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .gtd-symbol-bar-track {
+        height: 8px;
+        border-radius: 6px;
+        background: rgba(255, 255, 255, 0.06);
+        overflow: hidden;
+    }
+
+    .gtd-symbol-bar {
+        height: 100%;
+        border-radius: 6px;
+        transition: width 0.4s ease;
+
+        &.gtd-bar-pos { background: linear-gradient(90deg, #1fa88a, var(--gtd-pos)); }
+        &.gtd-bar-neg { background: linear-gradient(90deg, #c23a55, var(--gtd-neg)); }
+    }
+
+    .gtd-symbol-value {
+        text-align: right;
+        font-weight: 700;
+    }
+
+    .gtd-trades-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 12.5px;
+
+        th {
+            text-align: left;
+            font-size: 10.5px;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--gtd-text-muted);
+            font-weight: 600;
+            padding: 0 8px 10px;
+            border-bottom: 1px solid var(--gtd-border);
+        }
+
+        td {
+            padding: 10px 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        tr:last-child td { border-bottom: none; }
+    }
+
+    .gtd-symbol-cell { font-weight: 700; }
+    .gtd-muted { color: var(--gtd-text-muted); }
+    .gtd-text-end { text-align: right; font-weight: 700; }
+
+    .gtd-badge {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 999px;
+        font-size: 10.5px;
+        font-weight: 700;
+        text-transform: capitalize;
+        background: rgba(255, 255, 255, 0.08);
+        color: var(--gtd-text-muted);
+
+        &-confirmed {
+            background: rgba(56, 224, 189, 0.15);
+            color: var(--gtd-accent);
+        }
+        &-draft {
+            background: rgba(255, 196, 0, 0.15);
+            color: #ffcd4d;
+        }
+    }
+
+    .gtd-empty {
+        color: var(--gtd-text-muted);
+        font-size: 12.5px;
+        padding: 24px 0;
+        text-align: center;
+    }
+
+        /* =========================================================
+    CUSTOM DATE FILTER
+    ========================================================= */
+
+    .gtd-custom-date-filter {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+
+        margin-top: 12px;
+        margin-bottom: 18px;
+        padding: 12px 14px;
+
+        background:
+            linear-gradient(
+                135deg,
+                rgba(255, 255, 255, 0.055),
+                rgba(255, 255, 255, 0.025)
+            );
+
+        border: 1px solid var(--gtd-border);
+        border-radius: 14px;
+
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+
+        box-shadow:
+            0 8px 24px rgba(0, 0, 0, 0.16),
+            inset 0 1px 0 rgba(255, 255, 255, 0.04);
+
+        animation: gtd-date-filter-in 0.2s ease-out;
+    }
+
+
+    /* =========================================================
+    DATE FIELD
+    ========================================================= */
+
+    .gtd-date-field {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        label {
+            color: var(--gtd-text-muted);
+            font-size: 10.5px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            white-space: nowrap;
+        }
+
+        input[type="date"] {
+            width: 150px;
+            height: 36px;
+
+            padding: 0 10px;
+
+            background: rgba(255, 255, 255, 0.045);
+            color: var(--gtd-text);
+
+            border: 1px solid rgba(255, 255, 255, 0.10);
+            border-radius: 9px;
+
+            outline: none;
+
+            font-family: inherit;
+            font-size: 12px;
+            font-weight: 600;
+
+            color-scheme: dark;
+
+            transition:
+                border-color 0.2s ease,
+                background 0.2s ease,
+                box-shadow 0.2s ease,
+                transform 0.15s ease;
+
+            &:hover {
+                background: rgba(255, 255, 255, 0.07);
+                border-color: rgba(56, 224, 189, 0.35);
+            }
+
+            &:focus {
+                background: rgba(56, 224, 189, 0.055);
+                border-color: var(--gtd-accent);
+
+                box-shadow:
+                    0 0 0 3px rgba(56, 224, 189, 0.10),
+                    0 0 16px rgba(56, 224, 189, 0.08);
+            }
+
+            &:active {
+                transform: translateY(1px);
+            }
+        }
+    }
+
+
+    /* =========================================================
+    CALENDAR ICON
+    ========================================================= */
+
+    .gtd-date-field input[type="date"]::-webkit-calendar-picker-indicator {
+        cursor: pointer;
+
+        filter:
+            invert(78%)
+            sepia(40%)
+            saturate(800%)
+            hue-rotate(115deg)
+            brightness(95%);
+
+        opacity: 0.75;
+
+        transition:
+            opacity 0.2s ease,
+            transform 0.2s ease;
+    }
+
+    .gtd-date-field input[type="date"]:hover::-webkit-calendar-picker-indicator {
+        opacity: 1;
+        transform: scale(1.08);
+    }
+
+
+    /* =========================================================
+    FROM → TO SEPARATOR
+    ========================================================= */
+
+    .gtd-date-field + .gtd-date-field {
+        position: relative;
+
+        &::before {
+            content: "→";
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            width: 22px;
+            height: 22px;
+
+            margin-right: 2px;
+
+            color: var(--gtd-accent);
+            font-size: 15px;
+            font-weight: 700;
+
+            opacity: 0.8;
+        }
+    }
+
+
+    /* =========================================================
+    CUSTOM DATE BUTTON
+    ========================================================= */
+
+    .gtd-period-btn {
+        position: relative;
+
+        &.active {
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--gtd-accent),
+                    var(--gtd-accent-2)
+                );
+
+            color: #071018;
+
+            box-shadow:
+                0 0 18px rgba(56, 224, 189, 0.30),
+                0 0 30px rgba(124, 107, 255, 0.12);
+        }
+    }
+
+
+    /* =========================================================
+    SUBTLE TOP GLOW
+    ========================================================= */
+
+    .gtd-custom-date-filter::before {
+        content: "";
+
+        position: absolute;
+
+        /* Prevent affecting the layout */
+        pointer-events: none;
+    }
+
+
+    /* =========================================================
+    ANIMATION
+    ========================================================= */
+
+    @keyframes gtd-date-filter-in {
+        from {
+            opacity: 0;
+            transform: translateY(-5px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+
+    /* =========================================================
+    RESPONSIVE
+    ========================================================= */
+
+    @media (max-width: 800px) {
+        .gtd-custom-date-filter {
+            align-items: stretch;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .gtd-date-field {
+            justify-content: space-between;
+
+            input[type="date"] {
+                flex: 1;
+                width: auto;
+                max-width: 180px;
+            }
+        }
+
+        .gtd-date-field + .gtd-date-field {
+            &::before {
+                display: none;
+            }
+        }
+    }
+    
+}

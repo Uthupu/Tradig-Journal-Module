@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="grow_intraday_trading.Dashboard">
+        <div class="gtd-dashboard">
+
+            <div class="gtd-header">
+                <div class="gtd-header-title">
+                    <div class="gtd-header-eyebrow">Trading Journal</div>
+                    <h1>Dashboard</h1>
+                </div>
+                <div class="gtd-header-actions">
+                    <div class="gtd-period-switch">
+                        <t t-foreach="periods" t-as="p" t-key="p.key">
+                            <button type="button"
+                                    t-attf-class="gtd-period-btn {{ state.period === p.key ? 'active' : '' }}"
+                                    t-on-click="() => this.setPeriod(p.key)">
+                                <t t-esc="p.label"/>
+                            </button>
+                        </t>
+
+                        <!-- Custom Date Button -->
+                        <button type="button"
+                                t-attf-class="gtd-period-btn {{ state.period === 'custom' ? 'active' : '' }}"
+                                t-on-click="setCustomDate">
+                            Custom Date
+                        </button>
+                    </div>
+
+                    <!-- Custom Date Filter -->
+                    <div t-if="state.period === 'custom'" class="gtd-custom-date-filter">
+                        <div class="gtd-date-field">
+                            <label>From</label>
+                            <input type="date"
+                                t-model="state.customDateFrom"
+                                t-on-change="applyCustomDate"/>
+                        </div>
+
+                        <div class="gtd-date-field">
+                            <label>To</label>
+                            <input type="date"
+                                t-model="state.customDateTo"
+                                t-on-change="applyCustomDate"/>
+                        </div>
+                    </div>
+
+                    <span t-if="state.lastUpdated" class="gtd-updated-at">
+                        <i t-attf-class="fa fa-refresh {{ state.refreshing ? 'gtd-spin' : '' }}"/>
+                        Updated <t t-esc="fmtTime(state.lastUpdated)"/>
+                    </span>
+
+                    <button type="button"
+                            class="gtd-refresh-btn"
+                            t-on-click="refreshNow"
+                            t-att-disabled="state.refreshing"
+                            title="Refresh now">
+                        <i t-attf-class="fa fa-refresh {{ state.refreshing ? 'gtd-spin' : '' }}"/>
+                    </button>
+
+                    <button type="button"
+                            class="gtd-cta"
+                            t-on-click="openTrades">
+                        <i class="fa fa-plus"/> New Trade
+                    </button>
+                </div>
+            </div>
+
+            <div t-if="state.loading" class="gtd-loading">
+                <div class="gtd-spinner"/>
+                <span>Crunching your numbers…</span>
+            </div>
+
+            <div t-if="!state.loading and state.data" class="gtd-body">
+
+                <!-- KPI ROW -->
+                <div class="gtd-kpi-grid">
+
+                    <div class="gtd-card gtd-kpi gtd-kpi-hero">
+                        <div class="gtd-kpi-icon gtd-icon-net"><i class="fa fa-bolt"/></div>
+                        <div class="gtd-kpi-label">Net P/L</div>
+                        <div t-attf-class="gtd-kpi-value {{ plClass(state.data.kpis.net_pl) }}">
+                            <t t-esc="fmtMoney(state.data.kpis.net_pl)"/>
+                        </div>
+                        <div class="gtd-kpi-sub">
+                            <span class="gtd-pos"><i class="fa fa-arrow-up"/> <t t-esc="fmtMoney(state.data.kpis.total_profit)"/></span>
+                            <span class="gtd-neg"><i class="fa fa-arrow-down"/> <t t-esc="fmtMoney(state.data.kpis.total_loss)"/></span>
+                        </div>
+                    </div>
+
+                    <div class="gtd-card gtd-kpi">
+                        <div class="gtd-kpi-icon gtd-icon-balance"><i class="fa fa-inr"/></div>
+                        <div class="gtd-kpi-label">Current Balance</div>
+                        <div class="gtd-kpi-value">
+                            <t t-esc="fmtMoney(state.data.kpis.current_balance)"/>
+                        </div>
+                    </div>
+
+                    <div class="gtd-card gtd-kpi">
+                        <div class="gtd-kpi-icon gtd-icon-winrate"><i class="fa fa-bullseye"/></div>
+                        <div class="gtd-kpi-label">Win Rate</div>
+                        <div class="gtd-kpi-value">
+                            <t t-esc="state.data.kpis.win_rate"/>%
+                        </div>
+                        <div class="gtd-progress">
+                            <div class="gtd-progress-bar" t-attf-style="width: {{ state.data.kpis.win_rate }}%"/>
+                        </div>
+                    </div>
+
+                    <div class="gtd-card gtd-kpi">
+                        <div class="gtd-kpi-icon gtd-icon-days"><i class="fa fa-calendar"/></div>
+                        <div class="gtd-kpi-label">Trading Days</div>
+                        <div class="gtd-kpi-value"><t t-esc="state.data.kpis.trading_days"/></div>
+                    </div>
+
+                    <div class="gtd-card gtd-kpi">
+                        <div class="gtd-kpi-icon gtd-icon-streak"><i class="fa fa-fire"/></div>
+                        <div class="gtd-kpi-label">Current Streak</div>
+                        <div t-if="state.data.kpis.current_streak.count"
+                             t-attf-class="gtd-kpi-value {{ state.data.kpis.current_streak.type === 'win' ? 'gtd-pos' : 'gtd-neg' }}">
+                            <t t-esc="state.data.kpis.current_streak.count"/>
+                            <span class="gtd-streak-label">
+                                <t t-esc="state.data.kpis.current_streak.type === 'win' ? 'wins' : 'losses'"/>
+                            </span>
+                        </div>
+                        <div t-else="" class="gtd-kpi-value gtd-flat">—</div>
+                    </div>
+
+                </div>
+
+                <!-- CHARTS ROW -->
+                <div class="gtd-charts-grid">
+                    <div class="gtd-card gtd-chart-card gtd-equity-card">
+                        <div class="gtd-card-header">
+                            <h3>Equity Curve</h3>
+                            <span class="gtd-card-hint">Closing balance over time</span>
+                        </div>
+                        <div class="gtd-chart-wrap">
+                            <canvas t-ref="equityCanvas"/>
+                        </div>
+                    </div>
+
+                    <div class="gtd-card gtd-chart-card gtd-symbols-card">
+                        <div class="gtd-card-header">
+                            <h3>Top Symbols</h3>
+                            <span class="gtd-card-hint">By absolute P/L</span>
+                        </div>
+                        <div t-if="!state.data.top_symbols.length" class="gtd-empty">No trades in this period</div>
+                        <div class="gtd-symbol-list">
+                            <t t-foreach="state.data.top_symbols" t-as="s" t-key="s.symbol">
+                                <div class="gtd-symbol-row">
+                                    <div class="gtd-symbol-name"><t t-esc="s.symbol"/></div>
+                                    <div class="gtd-symbol-bar-track">
+                                        <div t-attf-class="gtd-symbol-bar {{ s.pl >= 0 ? 'gtd-bar-pos' : 'gtd-bar-neg' }}"
+                                             t-attf-style="width: {{ s.width }}%"/>
+                                    </div>
+                                    <div t-attf-class="gtd-symbol-value {{ plClass(s.pl) }}">
+                                        <t t-esc="fmtCompact(s.pl)"/>
+                                    </div>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MONTHLY + RECENT TRADES ROW -->
+                <div class="gtd-charts-grid gtd-charts-grid-bottom">
+                    <div class="gtd-card gtd-chart-card">
+                        <div class="gtd-card-header">
+                            <h3>Monthly Performance</h3>
+                            <span class="gtd-card-hint gtd-link" t-on-click="openMonthlySummaries">
+                                View all <i class="fa fa-angle-right"/>
+                            </span>
+                        </div>
+                        <div class="gtd-chart-wrap gtd-chart-wrap-short">
+                            <canvas t-ref="monthlyCanvas"/>
+                        </div>
+                    </div>
+
+                    <div class="gtd-card gtd-chart-card">
+                        <div class="gtd-card-header">
+                            <h3>Recent Trades</h3>
+                            <span class="gtd-card-hint gtd-link" t-on-click="openTrades">
+                                View all <i class="fa fa-angle-right"/>
+                            </span>
+                        </div>
+                        <div t-if="!state.data.recent_trades.length" class="gtd-empty">No trades logged yet</div>
+                        <table t-if="state.data.recent_trades.length" class="gtd-trades-table">
+                            <thead>
+                                <tr>
+                                    <th>Symbol</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                    <th class="gtd-text-end">P/L</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="state.data.recent_trades" t-as="t_" t-key="t_.id">
+                                    <tr>
+                                        <td class="gtd-symbol-cell"><t t-esc="t_.symbol"/></td>
+                                        <td class="gtd-muted"><t t-esc="t_.date"/></td>
+                                        <td>
+                                            <span t-attf-class="gtd-badge gtd-badge-{{ t_.state }}">
+                                                <t t-esc="t_.state"/>
+                                            </span>
+                                        </td>
+                                        <td t-attf-class="gtd-text-end {{ plClass(t_.pl) }}">
+                                            <t t-esc="fmtMoney(t_.pl)"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </t>
+
+</templates>

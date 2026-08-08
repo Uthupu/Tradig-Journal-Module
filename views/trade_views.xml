@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_grow_intraday_trade_list" model="ir.ui.view">
+        <field name="name">grow.intraday.trade.list</field>
+        <field name="model">grow.intraday.trade</field>
+        <field name="arch" type="xml">
+            <list string="Trades" decoration-success="profit_loss &gt; 0"
+                  decoration-danger="profit_loss &lt; 0" default_order="trade_date desc">
+                <field name="trade_date"/>
+                <field name="stock_symbol"/>
+                <field name="trade_type"/>
+                <field name="buy_price"/>
+                <field name="sell_price"/>
+                <field name="quantity"/>
+                <field name="profit_loss" widget="monetary" sum="Total P/L"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="result" widget="badge"
+                       decoration-success="result == 'profit'"
+                       decoration-danger="result == 'loss'"/>
+                <field name="user_id" optional="show"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'confirmed'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_grow_intraday_trade_form" model="ir.ui.view">
+        <field name="name">grow.intraday.trade.form</field>
+        <field name="model">grow.intraday.trade</field>
+        <field name="arch" type="xml">
+            <form string="Trade">
+                <header>
+                    <button name="action_confirm" type="object" string="Confirm"
+                            class="oe_highlight" invisible="state == 'confirmed'"/>
+                    <button name="action_reset_to_draft" type="object" string="Reset to Draft"
+                            invisible="state == 'draft'"
+                            groups="grow_intraday_trading.group_trading_supervisor"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="stock_symbol" placeholder="e.g. RELIANCE"/></h1>
+                    </div>
+                    <group>
+                        <group string="Trade Details">
+                            <field name="trade_date"/>
+                            <field name="trade_type"/>
+                            <field name="user_id"/>
+                            <field name="currency_id" groups="base.group_multi_currency"/>
+                        </group>
+                        <group string="Pricing">
+                            <field name="buy_price"/>
+                            <field name="sell_price"/>
+                            <field name="quantity"/>
+                            <field name="profit_loss" widget="monetary"/>
+                            <field name="result" widget="badge"
+                                   decoration-success="result == 'profit'"
+                                   decoration-danger="result == 'loss'"/>
+                        </group>
+                    </group>
+                    <group string="Notes/Observations">
+                        <field name="notes" nolabel="1" placeholder="Any relevant comments about this trade..."/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_grow_intraday_trade_search" model="ir.ui.view">
+        <field name="name">grow.intraday.trade.search</field>
+        <field name="model">grow.intraday.trade</field>
+        <field name="arch" type="xml">
+            <search string="Search Trades">
+                <field name="stock_symbol"/>
+                <field name="user_id"/>
+                <field name="trade_date"/>
+                <filter string="Profitable" name="filter_profit" domain="[('result', '=', 'profit')]"/>
+                <filter string="Loss-Making" name="filter_loss" domain="[('result', '=', 'loss')]"/>
+                <filter string="My Trades" name="filter_my" domain="[('user_id', '=', uid)]"/>
+                <separator/>
+                <filter string="Today" name="filter_today"
+                        domain="[('trade_date', '=', context_today().strftime('%Y-%m-%d'))]"/>
+                <group>
+                    <filter string="Trader" name="groupby_user" context="{'group_by': 'user_id'}"/>
+                    <filter string="Date" name="groupby_date" context="{'group_by': 'trade_date'}"/>
+                    <filter string="Stock/Symbol" name="groupby_symbol" context="{'group_by': 'stock_symbol'}"/>
+                    <filter string="Result" name="groupby_result" context="{'group_by': 'result'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_grow_intraday_trade" model="ir.actions.act_window">
+        <field name="name">Trades</field>
+        <field name="res_model">grow.intraday.trade</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_grow_intraday_trade_search"/>
+        <field name="context">{'search_default_filter_my': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Log your first intraday trade
+            </p>
+            <p>
+                Enter each buy/sell trade you make on the Grow platform. Profit or Loss
+                is calculated automatically as (Sell Price - Buy Price) x Quantity.
+            </p>
+        </field>
+    </record>
+
+</odoo>

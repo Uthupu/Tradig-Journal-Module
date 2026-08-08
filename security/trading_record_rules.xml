@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Trades: traders only see/manage their own -->
+    <record id="rule_trade_trader_own" model="ir.rule">
+        <field name="name">Trader: own trades only</field>
+        <field name="model_id" ref="model_grow_intraday_trade"/>
+        <field name="groups" eval="[(4, ref('group_trader'))]"/>
+        <field name="domain_force">[('user_id', '=', user.id)]</field>
+    </record>
+    <record id="rule_trade_supervisor_all" model="ir.rule">
+        <field name="name">Supervisor: all trades</field>
+        <field name="model_id" ref="model_grow_intraday_trade"/>
+        <field name="groups" eval="[(4, ref('group_trading_supervisor'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <!-- Daily summaries -->
+    <record id="rule_daily_summary_trader_own" model="ir.rule">
+        <field name="name">Trader: own daily summaries only</field>
+        <field name="model_id" ref="model_grow_daily_summary"/>
+        <field name="groups" eval="[(4, ref('group_trader'))]"/>
+        <field name="domain_force">[('user_id', '=', user.id)]</field>
+    </record>
+    <record id="rule_daily_summary_supervisor_all" model="ir.rule">
+        <field name="name">Supervisor: all daily summaries</field>
+        <field name="model_id" ref="model_grow_daily_summary"/>
+        <field name="groups" eval="[(4, ref('group_trading_supervisor'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <!-- Monthly summaries -->
+    <record id="rule_monthly_summary_trader_own" model="ir.rule">
+        <field name="name">Trader: own monthly summaries only</field>
+        <field name="model_id" ref="model_grow_monthly_summary"/>
+        <field name="groups" eval="[(4, ref('group_trader'))]"/>
+        <field name="domain_force">[('user_id', '=', user.id)]</field>
+    </record>
+    <record id="rule_monthly_summary_supervisor_all" model="ir.rule">
+        <field name="name">Supervisor: all monthly summaries</field>
+        <field name="model_id" ref="model_grow_monthly_summary"/>
+        <field name="groups" eval="[(4, ref('group_trading_supervisor'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+</odoo>
